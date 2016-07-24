@@ -23,4 +23,11 @@ public interface IUserService {
     void saveHandlerLogMethodNotFound(UserInfo user);
 
     void saveHandlerLogMethodParamNotMatch(UserInfo user);
+
+    void saveWithoutLog(UserInfo user);
+
+    void saveWithoutLogParam(UserInfo user);
+
+    void saveMultipleParamWithoutLogParam(String name, int age, String job, String website);
+
 }

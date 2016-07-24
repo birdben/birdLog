@@ -27,6 +27,36 @@ public class TestUserService {
 
     /******************************************************** 测试正常情况开始 **********************************************************/
     @Test
+    public void testSaveWithoutLog() throws Throwable {
+        UserInfo user = new UserInfo();
+        user.setName("birdben");
+        user.setAge(20);
+        user.setJob("programmer");
+        user.setWebsite("https://github.com/birdben");
+        userService.saveWithoutLog(user);
+    }
+
+    @Test
+    public void testSaveWithoutLogParam() throws Throwable {
+        UserInfo user = new UserInfo();
+        user.setName("birdben");
+        user.setAge(20);
+        user.setJob("programmer");
+        user.setWebsite("https://github.com/birdben");
+        userService.saveWithoutLogParam(user);
+    }
+
+    @Test
+    public void testSaveMultipleParamWithoutLogParam() throws Throwable {
+        UserInfo user = new UserInfo();
+        user.setName("birdben");
+        user.setAge(20);
+        user.setJob("programmer");
+        user.setWebsite("https://github.com/birdben");
+        userService.saveMultipleParamWithoutLogParam(user.getName(), user.getAge(), user.getJob(), user.getWebsite());
+    }
+
+    @Test
     public void testSaveHandlerLogInThisClassWithMapParam() throws Throwable {
         UserInfo user = new UserInfo();
         user.setName("birdben");

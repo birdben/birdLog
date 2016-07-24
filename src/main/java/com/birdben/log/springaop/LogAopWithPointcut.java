@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -172,7 +173,7 @@ public class LogAopWithPointcut {
                                 methods[i].invoke(logHandlerClass.newInstance(), param);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                throw new LogBindingException("Calling Class: '" + logHandlerClass + "', Method: '" + logHandlerMethodName + "' error.");
+                                throw new LogBindingException("Error invoking LogHandler method (" + logHandlerClass + "." + logHandlerMethodName + ").  Cause: " + e, e);
                             }
                             notFoundMethod = false;
                             break;
@@ -198,16 +199,32 @@ public class LogAopWithPointcut {
         //System.out.println("Around After");
     }
 
+    /**
+     * 将所有的参数转换成Map<String, Object>形式,key是LogParam指定的名称,value是对应参数的值
+     * @param params <index, paramName>
+     * @param method
+     * @param args 从joinPoint获取的参数值
+     * @return
+     */
     private Object convertArgsToMapParam(SortedMap<Integer, String> params, Method method, Object[] args) {
         final int paramCount = params.size();
         if (args == null || paramCount == 0) {
             return null;
-        } else if (!hasNamedParams(method) && paramCount == 1) {
-            return args[params.keySet().iterator().next()];
+        } else if (!hasNamedParams(method)) {
+            Object objs = Array.newInstance(Object.class, paramCount);
+            Iterator it = params.keySet().iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                Integer intValue = (Integer) it.next();
+                Array.set(objs, i, args[intValue]);
+                i ++;
+            }
+            return objs;
         } else {
             final Map<String, Object> param = new ParamMap<Object>();
             int i = 0;
             for (Map.Entry<Integer, String> entry : params.entrySet()) {
+                // LogParam指定的名称作为key,value是从joinPoint按照顺序获取出的参数的value,这样就可以将LogParam指定的名称和参数的value对应上
                 param.put(entry.getValue(), args[entry.getKey()]);
                 final String genericParamName = "param" + String.valueOf(i + 1);
                 if (!param.containsKey(genericParamName)) {
@@ -219,6 +236,12 @@ public class LogAopWithPointcut {
         }
     }
 
+    /**
+     * 从LogParam注解中获取出来的LogParam指定的名称存储到SortMap中<index, paramName>
+     * @param method
+     * @param hasNamedParameters
+     * @return
+     */
     private SortedMap<Integer, String> getParams(Method method, boolean hasNamedParameters) {
         final SortedMap<Integer, String> params = new TreeMap<Integer, String>();
         final Class<?>[] argTypes = method.getParameterTypes();
@@ -232,6 +255,13 @@ public class LogAopWithPointcut {
         return params;
     }
 
+    /**
+     * 从LogParam注解中获取指定的名称
+     * @param method
+     * @param i
+     * @param paramName
+     * @return
+     */
     private String getParamNameFromAnnotation(Method method, int i, String paramName) {
         final Object[] paramAnnos = method.getParameterAnnotations()[i];
         for (Object paramAnno : paramAnnos) {

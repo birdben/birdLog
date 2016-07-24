@@ -19,6 +19,29 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements IUserService {
 
     /******************************************************** 测试正常情况开始 **********************************************************/
+    public void saveWithoutLog(UserInfo user) {
+        System.out.println("saveWithoutLog name:" + user.getName());
+        System.out.println("saveWithoutLog age:" + user.getAge());
+        System.out.println("saveWithoutLog job:" + user.getJob());
+        System.out.println("saveWithoutLog website:" + user.getWebsite());
+    }
+
+    @Log(message = "UserServiceImpl自己当做LogHandler来处理不带LogParam注解的情况", method = "handlerUserServiceLogInThisClassWithoutLogParam")
+    public void saveWithoutLogParam(UserInfo user) {
+        System.out.println("saveWithoutLogParam name:" + user.getName());
+        System.out.println("saveWithoutLogParam age:" + user.getAge());
+        System.out.println("saveWithoutLogParam job:" + user.getJob());
+        System.out.println("saveWithoutLogParam website:" + user.getWebsite());
+    }
+
+    @Log(message = "UserServiceImpl自己当做LogHandler来处理不带LogParam注解,并且有多个参数的情况", method = "handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam")
+    public void saveMultipleParamWithoutLogParam(String name, int age, String job, String website) {
+        System.out.println("saveMultipleParamWithoutLogParam name:" + name);
+        System.out.println("saveMultipleParamWithoutLogParam age:" + age);
+        System.out.println("saveMultipleParamWithoutLogParam job:" + job);
+        System.out.println("saveMultipleParamWithoutLogParam website:" + website);
+    }
+
     @Log(message = "UserServiceImpl自己当做LogHandler来处理Map参数", method = "handlerUserServiceLogInThisClassWithMapParam")
     public void saveHandlerLogInThisClassWithMapParam(@LogParam("user") UserInfo user) {
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 name:" + user.getName());
@@ -87,6 +110,41 @@ public class UserServiceImpl implements IUserService {
 
     public void handlerUserServiceLogInThisClassMethodParamNotMatch(String name) {
         System.out.println("handlerUserServiceLogInThisClassMethodParamNotMatch name:" + name);
+    }
+
+    public void handlerUserServiceLogInThisClassWithoutLogParam(Object parameterObject) {
+        Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
+        if (parameterType == LogAopWithPointcut.ParamMap.class) {
+            LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
+            // 这里的Map的key是根据@LogParam的注解对应的
+            UserInfo user = (UserInfo) paramMap.get("user");
+
+            System.out.println("handlerUserServiceLogInThisClassWithoutLogParam name:" + user.getName());
+            System.out.println("handlerUserServiceLogInThisClassWithoutLogParam age:" + user.getAge());
+            System.out.println("handlerUserServiceLogInThisClassWithoutLogParam job:" + user.getJob());
+            System.out.println("handlerUserServiceLogInThisClassWithoutLogParam website:" + user.getWebsite());
+        }
+    }
+
+    public void handlerUserServiceLogInThisClassWithoutLogParam(UserInfo user) {
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParam name:" + user.getName());
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParam age:" + user.getAge());
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParam job:" + user.getJob());
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParam website:" + user.getWebsite());
+    }
+
+    public void handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam(String name, int age, String job, String website) {
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam name:" + name);
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam age:" + age);
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam job:" + job);
+        System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam website:" + website);
+    }
+
+    // 多参数不使用LogParam注解,是无法传递多参数的,因为使用invoke反射的方式参数类型是Object[],参数类型和方法无法对应上,所以只能使用Object... objs方式接收多参数
+    public void handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam(Object... objs) {
+        for (int i = 0; i < objs.length; i ++) {
+            System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam objs " + i + ":" + objs[i]);
+        }
     }
     /******************************************************** UserServiceImpl自己当成LogHandler的处理方法结束 **********************************************************/
 
