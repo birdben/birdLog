@@ -19,8 +19,12 @@ Nginx -> Logstash -> Redis -> ElasticSearch -> Kibana
 - http://127.0.0.1:8080/birdLog/aop/aopHandlerLogWithMapParam?name=birdben&age=20&job=programmer&website=github.com/birdben
 
 ### 待处理的List
-- 创建一个LogHandler接口，提供一个Map参数，其他自定义的LogHandler只需要实现此接口就可以定义自己的日志输出格式
 - 创建线程异步写入日志文件
 - 按照不同的格式输出到log4j
 - 搭建ELK环境
 - Logstash根据不同的日志格式模板创建不同的ES索引
+
+2016-07-24
+- 参考MyBatis的设计后确定LogHandler使用Map参数方式传参
+- 添加AOP反射LogHandler的异常处理
+- 添加各种情况的测试用例
