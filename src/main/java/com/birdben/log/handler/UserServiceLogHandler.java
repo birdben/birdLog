@@ -18,12 +18,10 @@ public class UserServiceLogHandler {
      * @param user
      */
     public void handlerUserServiceLogWithMultipleParam(UserInfo user) {
-        System.out.println("========================handlerUserServiceLogWithMultipleParam用户自定义格式开始============================");
-        System.out.println("name:" + user.getName());
-        System.out.println("age:" + user.getAge());
-        System.out.println("job:" + user.getJob());
-        System.out.println("website:" + user.getWebsite());
-        System.out.println("========================handlerUserServiceLogWithMultipleParam用户自定义格式结束============================");
+        System.out.println("handlerUserServiceLogWithMultipleParam name:" + user.getName());
+        System.out.println("handlerUserServiceLogWithMultipleParam age:" + user.getAge());
+        System.out.println("handlerUserServiceLogWithMultipleParam job:" + user.getJob());
+        System.out.println("handlerUserServiceLogWithMultipleParam website:" + user.getWebsite());
     }
 
     /**
@@ -35,12 +33,18 @@ public class UserServiceLogHandler {
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
             UserInfo user = (UserInfo) paramMap.get("user");
-            System.out.println("========================handlerUserServiceLogWithMapParam用户自定义格式开始============================");
-            System.out.println("name:" + user.getName());
-            System.out.println("age:" + user.getAge());
-            System.out.println("job:" + user.getJob());
-            System.out.println("website:" + user.getWebsite());
-            System.out.println("========================handlerUserServiceLogWithMapParam用户自定义格式结束============================");
+            System.out.println("handlerUserServiceLogWithMapParam name:" + user.getName());
+            System.out.println("handlerUserServiceLogWithMapParam age:" + user.getAge());
+            System.out.println("handlerUserServiceLogWithMapParam job:" + user.getJob());
+            System.out.println("handlerUserServiceLogWithMapParam website:" + user.getWebsite());
         }
+    }
+
+    /**
+     * 这里的日志处理方法 handlerUserServiceLogMethodParamNotMatch 的参数与Log注解的method调用方法的参数不一致
+     * @param name
+     */
+    public void handlerUserServiceLogMethodParamNotMatch(String name) {
+        System.out.println("handlerUserServiceLogMethodParamNotMatch name:" + name);
     }
 }

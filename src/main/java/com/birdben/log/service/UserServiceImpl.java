@@ -68,37 +68,47 @@ public class UserServiceImpl implements IUserService {
         System.out.println("LogHandler找到同名的方法,但是方法参数不匹配 job:" + user.getJob());
         System.out.println("LogHandler找到同名的方法,但是方法参数不匹配 website:" + user.getWebsite());
     }
+
+    @Log(message = "在指定的UserServiceLogHandler没有找到同名的方法", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogMethodNotFound")
+    public void saveHandlerLogMethodNotFound(@LogParam("user") UserInfo user) {
+        System.out.println("在指定的UserServiceLogHandler没有找到同名的方法 name:" + user.getName());
+        System.out.println("在指定的UserServiceLogHandler没有找到同名的方法 age:" + user.getAge());
+        System.out.println("在指定的UserServiceLogHandler没有找到同名的方法 job:" + user.getJob());
+        System.out.println("在指定的UserServiceLogHandler没有找到同名的方法 website:" + user.getWebsite());
+    }
+
+    @Log(message = "在指定的UserServiceLogHandler找到同名的方法,但是方法参数不匹配", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogMethodParamNotMatch")
+    public void saveHandlerLogMethodParamNotMatch(@LogParam("user") UserInfo user) {
+        System.out.println("在指定的UserServiceLogHandler找到同名的方法,但是方法参数不匹配 name:" + user.getName());
+        System.out.println("在指定的UserServiceLogHandler找到同名的方法,但是方法参数不匹配 age:" + user.getAge());
+        System.out.println("在指定的UserServiceLogHandler找到同名的方法,但是方法参数不匹配 job:" + user.getJob());
+        System.out.println("在指定的UserServiceLogHandler找到同名的方法,但是方法参数不匹配 website:" + user.getWebsite());
+    }
     /******************************************************** 测试异常情况结束 **********************************************************/
 
     /******************************************************** UserServiceImpl自己当成LogHandler的处理方法开始 **********************************************************/
     public void handlerUserServiceLogInThisClassWithMultipleParam(UserInfo user) {
-        System.out.println("========================handlerUserServiceLogInThisClassWithMultipleParam用户自定义格式开始============================");
-        System.out.println("name:" + user.getName());
-        System.out.println("age:" + user.getAge());
-        System.out.println("job:" + user.getJob());
-        System.out.println("website:" + user.getWebsite());
-        System.out.println("========================handlerUserServiceLogInThisClassWithMultipleParam用户自定义格式结束============================");
+        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam name:" + user.getName());
+        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam age:" + user.getAge());
+        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam job:" + user.getJob());
+        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam website:" + user.getWebsite());
     }
 
     public void handlerUserServiceLogInThisClassWithMapParam(Object parameterObject) {
-        System.out.println("========================handlerUserServiceLogInThisClassWithMapParam用户自定义格式开始============================");
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
             UserInfo user = (UserInfo) paramMap.get("user");
 
-            System.out.println("name:" + user.getName());
-            System.out.println("age:" + user.getAge());
-            System.out.println("job:" + user.getJob());
-            System.out.println("website:" + user.getWebsite());
+            System.out.println("handlerUserServiceLogInThisClassWithMapParam name:" + user.getName());
+            System.out.println("handlerUserServiceLogInThisClassWithMapParam age:" + user.getAge());
+            System.out.println("handlerUserServiceLogInThisClassWithMapParam job:" + user.getJob());
+            System.out.println("handlerUserServiceLogInThisClassWithMapParam website:" + user.getWebsite());
         }
-        System.out.println("========================handlerUserServiceLogInThisClassWithMapParam用户自定义格式结束============================");
     }
 
     public void handlerUserServiceLogInThisClassMethodParamNotMatch(String name) {
-        System.out.println("========================handlerUserServiceLogInThisClassMethodParamNotMatch用户自定义格式开始============================");
-        System.out.println("name:" + name);
-        System.out.println("========================handlerUserServiceLogInThisClassMethodParamNotMatch用户自定义格式结束============================");
+        System.out.println("handlerUserServiceLogInThisClassMethodParamNotMatch name:" + name);
     }
     /******************************************************** UserServiceImpl自己当成LogHandler的处理方法结束 **********************************************************/
 

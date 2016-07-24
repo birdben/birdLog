@@ -19,4 +19,12 @@ public interface IUserService {
     void saveHandlerLogWithMultipleParam(UserInfo user);
 
     void saveHandlerLogWithMapParam(UserInfo user);
+
+    void saveHandlerLogInThisClassMethodNotFound(UserInfo user);
+
+    void saveHandlerLogInThisClassMethodParamNotMatch(UserInfo user);
+
+    void saveHandlerLogMethodNotFound(UserInfo user);
+
+    void saveHandlerLogMethodParamNotMatch(UserInfo user);
 }

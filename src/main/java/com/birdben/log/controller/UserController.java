@@ -123,6 +123,7 @@ public class UserController {
         return "";
     }
 
+    /******************************************************** UserController自己当成LogHandler的处理方法开始 **********************************************************/
     /**
      * 自定义日志处理方法,会通过Log注解的method指定该方法的名称
      * @param name
@@ -131,12 +132,10 @@ public class UserController {
      * @param website
      */
     public void handlerUserControllerLogInThisClassWithMultipleParam(String name, int age, String job, String website) {
-        System.out.println("========================handlerUserControllerLogInThisClassWithMultipleParam用户自定义格式开始============================");
-        System.out.println("name:" + name);
-        System.out.println("age:" + age);
-        System.out.println("job:" + job);
-        System.out.println("website:" + website);
-        System.out.println("========================handlerUserControllerLogInThisClassWithMultipleParam用户自定义格式结束============================");
+        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam name:" + name);
+        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam age:" + age);
+        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam job:" + job);
+        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam website:" + website);
     }
 
     /**
@@ -144,7 +143,6 @@ public class UserController {
      * @param parameterObject
      */
     public void handlerUserControllerLogInThisClassWithMapParam(Object parameterObject) {
-        System.out.println("========================handlerUserControllerLogInThisClassWithMapParam用户自定义格式开始============================");
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
@@ -152,12 +150,12 @@ public class UserController {
             Integer age = (Integer) paramMap.get("age");
             String job = (String) paramMap.get("job");
             String website = (String) paramMap.get("website");
-            System.out.println("name:" + name);
-            System.out.println("age:" + age);
-            System.out.println("job:" + job);
-            System.out.println("website:" + website);
+            System.out.println("handlerUserControllerLogInThisClassWithMapParam name:" + name);
+            System.out.println("handlerUserControllerLogInThisClassWithMapParam age:" + age);
+            System.out.println("handlerUserControllerLogInThisClassWithMapParam job:" + job);
+            System.out.println("handlerUserControllerLogInThisClassWithMapParam website:" + website);
         }
-        System.out.println("========================handlerUserControllerLogInThisClassWithMapParam用户自定义格式结束============================");
     }
+    /******************************************************** UserController自己当成LogHandler的处理方法开始 **********************************************************/
 
 }
