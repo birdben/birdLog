@@ -1,7 +1,6 @@
 package com.birdben.log.controller;
 
 import com.birdben.log.annotation.Log;
-import com.birdben.log.annotation.LogHandlerMethod;
 import com.birdben.log.annotation.LogParam;
 import com.birdben.log.bean.UserInfo;
 import com.birdben.log.handler.UserControllerLogHandler;
@@ -16,7 +15,7 @@ import javax.annotation.Resource;
 /**
  * @author birdben
  * @version V1.0
- * @name: UserController
+ * @name UserController
  * @description 用户Controller
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19
@@ -131,7 +130,6 @@ public class UserController {
      * @param job
      * @param website
      */
-    //@LogHandlerMethod(name="handlerUserControllerLogInThisClassWithMultipleParam")
     public void handlerUserControllerLogInThisClassWithMultipleParam(String name, int age, String job, String website) {
         System.out.println("========================handlerUserControllerLogInThisClassWithMultipleParam用户自定义格式开始============================");
         System.out.println("name:" + name);
@@ -145,7 +143,6 @@ public class UserController {
      * 自定义日志处理方法,会通过Log注解的method指定该方法的名称
      * @param parameterObject
      */
-    //@LogHandlerMethod(name="handlerUserControllerLogInThisClassWithMapParam")
     public void handlerUserControllerLogInThisClassWithMapParam(Object parameterObject) {
         System.out.println("========================handlerUserControllerLogInThisClassWithMapParam用户自定义格式开始============================");
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();

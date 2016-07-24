@@ -5,7 +5,7 @@ import com.birdben.log.springaop.LogAopWithPointcut;
 /**
  * @author birdben
  * @version V1.0
- * @name: UserControllerLogHandler
+ * @name UserControllerLogHandler
  * @description 用户Controller日志处理类
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19

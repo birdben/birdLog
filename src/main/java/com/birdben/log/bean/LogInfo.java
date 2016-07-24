@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author birdben
  * @version V1.0
- * @name: LogInfo
+ * @name LogInfo
  * @description 日志信息
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19

@@ -3,7 +3,7 @@ package com.birdben.log.bean;
 /**
  * @author birdben
  * @version V1.0
- * @name: UserInfo
+ * @name UserInfo
  * @description 用户信息
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19

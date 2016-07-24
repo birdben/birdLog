@@ -1,9 +1,9 @@
 package com.birdben.log.springaop;
 
 import com.birdben.log.annotation.Log;
-import com.birdben.log.annotation.LogHandlerMethod;
 import com.birdben.log.annotation.LogParam;
 import com.birdben.log.bean.LogInfo;
+import com.birdben.log.exception.LogBindingException;
 import com.birdben.log.handler.DefaultLogHandler;
 import com.birdben.log.utils.DateUtils;
 import com.google.common.base.Strings;
@@ -14,13 +14,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
  * @author birdben
  * @version V1.0
- * @name: LogAopWithPointcut
+ * @name LogAopWithPointcut
  * @description Aop切面处理
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19
@@ -101,9 +100,6 @@ public class LogAopWithPointcut {
         Method method = ms.getMethod();
         System.out.println("标记为" + tag.get() + "的方法" + method.getName() + "运行消耗 " + runTime.get().toString() + " 秒");
 
-        // (已废弃)方式一处理日志
-        //handlerLogInThisClass(method, joinPoint);
-
         // 方式二:多参数方式处理日志
         handlerLogWithMultipleParam(method, joinPoint);
 
@@ -150,72 +146,6 @@ public class LogAopWithPointcut {
     }
 
     /**
-     * (已废弃)已经添加默认DefaultLogHandler来作为默认日志处理类,如果handler为DefaultLogHandler,就指定为当前调用的Class
-     * 第一种方式:直接使用Log注解的当前类作为LogHandler来处理日志,在LogHandler中找到LogHandlerMethod注解的方法来处理日志
-     * @param method
-     * @param joinPoint
-     */
-    @Deprecated
-    private void handlerLogInThisClass(Method method, JoinPoint joinPoint) {
-        System.out.println("--------------------handlerLogInThisClass开始------------------------------");
-        if (!Strings.isNullOrEmpty(method.getAnnotation(Log.class).method())) {
-            String logHandlerClass = joinPoint.getTarget().getClass().getName();
-            String logHandlerMethodName = method.getAnnotation(Log.class).method();
-            Class<?> currentClass = null;
-            try {
-                currentClass = Class.forName(logHandlerClass);
-                Method[] methods = currentClass.getMethods();
-                for (int i = 0; i < methods.length; ++i) {
-                    Class<?> returnType = methods[i].getReturnType();
-                    Class<?> para[] = methods[i].getParameterTypes();
-                    try {
-                        LogHandlerMethod logHandlerMethodAnnotation = methods[i].getAnnotation(LogHandlerMethod.class);
-                        if (logHandlerMethodAnnotation == null) {
-                            continue;
-                        }
-                        String logHandlerMethodAnnotationName = logHandlerMethodAnnotation.name();
-                        if (!Strings.isNullOrEmpty(logHandlerMethodAnnotationName) && !Strings.isNullOrEmpty(logHandlerMethodName)) {
-                            if (logHandlerMethodAnnotationName.equals(logHandlerMethodName)) {
-                                methods[i].invoke(currentClass.newInstance(), joinPoint.getArgs());
-                                break;
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    int temp = methods[i].getModifiers();
-                    System.out.print(Modifier.toString(temp) + " ");
-                    System.out.print(returnType.getName() + "  ");
-                    System.out.print(methods[i].getName() + " ");
-                    System.out.print("(");
-                    for (int j = 0; j < para.length; ++j) {
-                        System.out.print(para[j].getName() + " " + "arg" + j);
-                        if (j < para.length - 1) {
-                            System.out.print(",");
-                        }
-                    }
-                    Class<?> exce[] = methods[i].getExceptionTypes();
-                    if (exce.length > 0) {
-                        System.out.print(") throws ");
-                        for (int k = 0; k < exce.length; ++k) {
-                            System.out.print(exce[k].getName() + " ");
-                            if (k < exce.length - 1) {
-                                System.out.print(",");
-                            }
-                        }
-                    } else {
-                        System.out.print(")");
-                    }
-                    System.out.println();
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("--------------------handlerLogInThisClass结束------------------------------");
-    }
-
-    /**
      * 第二种方式:将所有参数原封不动的传给LogHandler
      * @param method
      * @param joinPoint
@@ -229,26 +159,28 @@ public class LogAopWithPointcut {
                 // 如果LogHandler是默认的DefaultLogHandler.class,就使用当前调用的Class
                 logHandlerClass = joinPoint.getTarget().getClass();
             }
-            try {
-                Method[] methods = logHandlerClass.getMethods();
-                for (int i = 0; i < methods.length; ++i) {
-                    try {
-                        String currentMethodName = methods[i].getName();
-                        if (Strings.isNullOrEmpty(logHandlerMethodName)) {
-                            continue;
+            Method[] methods = logHandlerClass.getMethods();
+            boolean notFoundMethod = true;
+            for (int i = 0; i < methods.length; ++i) {
+                String currentMethodName = methods[i].getName();
+                if (Strings.isNullOrEmpty(logHandlerMethodName)) {
+                    continue;
+                }
+                if (!Strings.isNullOrEmpty(currentMethodName) && !Strings.isNullOrEmpty(logHandlerMethodName)) {
+                    if (currentMethodName.equals(logHandlerMethodName)) {
+                        try {
+                            methods[i].invoke(logHandlerClass.newInstance(), joinPoint.getArgs());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw new LogBindingException("Calling Class: '" + logHandlerClass + "', Method: '" + logHandlerMethodName + "' error.");
                         }
-                        if (!Strings.isNullOrEmpty(currentMethodName) && !Strings.isNullOrEmpty(logHandlerMethodName)) {
-                            if (currentMethodName.equals(logHandlerMethodName)) {
-                                methods[i].invoke(logHandlerClass.newInstance(), joinPoint.getArgs());
-                                break;
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        notFoundMethod = false;
+                        break;
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+            if (notFoundMethod) {
+                throw new LogBindingException("Method '" + logHandlerMethodName + "' not found in '" + logHandlerClass + "' Class .");
             }
         }
         System.out.println("--------------------handlerLogWithMultipleParam结束------------------------------");
@@ -269,27 +201,31 @@ public class LogAopWithPointcut {
                 logHandlerClass = joinPoint.getTarget().getClass();
             }
             SortedMap<Integer, String> params = Collections.unmodifiableSortedMap(getParams(method, hasNamedParams(method)));
-            try {
-                Method[] methods = logHandlerClass.getMethods();
+            Method[] methods = logHandlerClass.getMethods();
+            boolean notFoundMethod = true;
+            if (!Strings.isNullOrEmpty(logHandlerMethodName)) {
                 for (int i = 0; i < methods.length; ++i) {
-                    try {
-                        Object param = convertArgsToMapParam(params, method, joinPoint.getArgs());
-                        String currentMethodName = methods[i].getName();
-                        if (Strings.isNullOrEmpty(logHandlerMethodName)) {
-                            continue;
-                        }
-                        if (!Strings.isNullOrEmpty(currentMethodName) && !Strings.isNullOrEmpty(logHandlerMethodName)) {
-                            if (currentMethodName.equals(logHandlerMethodName)) {
+                    Object param = convertArgsToMapParam(params, method, joinPoint.getArgs());
+                    String currentMethodName = methods[i].getName();
+                    if (Strings.isNullOrEmpty(logHandlerMethodName)) {
+                        continue;
+                    }
+                    if (!Strings.isNullOrEmpty(currentMethodName)) {
+                        if (currentMethodName.equals(logHandlerMethodName)) {
+                            try {
                                 methods[i].invoke(logHandlerClass.newInstance(), param);
-                                break;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                throw new LogBindingException("Calling Class: '" + logHandlerClass + "', Method: '" + logHandlerMethodName + "' error.");
                             }
+                            notFoundMethod = false;
+                            break;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+            if (notFoundMethod) {
+                throw new LogBindingException("Method '" + logHandlerMethodName + "' not found in '" + logHandlerClass + "' Class .");
             }
         }
         System.out.println("--------------------handlerLogWithMapParam结束------------------------------");
@@ -375,8 +311,7 @@ public class LogAopWithPointcut {
         @Override
         public V get(Object key) {
             if (!super.containsKey(key)) {
-                //throw new BindingException("Parameter '" + key + "' not found. Available parameters are " + keySet());
-                //throw new Exception();
+                throw new LogBindingException("Parameter '" + key + "' not found. Available parameters are " + keySet());
             }
             return super.get(key);
         }

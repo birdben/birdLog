@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @author birdben
  * @version V1.0
- * @name: DateUtils
+ * @name DateUtils
  * @description 日期工具类
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19

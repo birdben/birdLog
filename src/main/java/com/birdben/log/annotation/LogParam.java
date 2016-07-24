@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author birdben
  * @version V1.0
- * @name: LogParam
+ * @name LogParam
  * @description 日志参数注解
  * @github https://github.com/birdben
  * @date 16/7/23 下午3:19
