@@ -56,7 +56,7 @@ public class LogAopWithPointcut {
     @Before("log()")
     public void beforeExec(JoinPoint joinPoint) {
         long currentStartTime = System.currentTimeMillis();
-        System.out.println("currentStartTime:" + DateUtils.format(new Date(currentStartTime), DateUtils.DEFAULT_PATTERN));
+        //System.out.println("currentStartTime:" + DateUtils.format(new Date(currentStartTime), DateUtils.DEFAULT_PATTERN));
 
         // 保存方法执行开始时间
         time.set(currentStartTime);
@@ -68,7 +68,7 @@ public class LogAopWithPointcut {
 
         MethodSignature ms = (MethodSignature) joinPoint.getSignature();
         Method method = ms.getMethod();
-        System.out.println(method.getAnnotation(Log.class).message() + "标记" + tag.get());
+        //System.out.println(method.getAnnotation(Log.class).message() + "标记" + tag.get());
     }
 
     /**
@@ -79,7 +79,7 @@ public class LogAopWithPointcut {
     public void afterExec(JoinPoint joinPoint) {
 
         long currentEndTime = System.currentTimeMillis();
-        System.out.println("currentEndTime:" + DateUtils.format(new Date(currentEndTime), DateUtils.DEFAULT_PATTERN));
+        //System.out.println("currentEndTime:" + DateUtils.format(new Date(currentEndTime), DateUtils.DEFAULT_PATTERN));
 
         // 保存方法执行结束时间
         endTimestamp.set(currentEndTime);
@@ -98,33 +98,30 @@ public class LogAopWithPointcut {
 
         MethodSignature ms = (MethodSignature) joinPoint.getSignature();
         Method method = ms.getMethod();
-        System.out.println("标记为" + tag.get() + "的方法" + method.getName() + "运行消耗 " + runTime.get().toString() + " 秒");
-
-        // 方式二:多参数方式处理日志
-        handlerLogWithMultipleParam(method, joinPoint);
+        //System.out.println("标记为" + tag.get() + "的方法" + method.getName() + "运行消耗 " + runTime.get().toString() + " 秒");
 
         // 方式三:Map参数方式处理日志
-        //handlerLogWithMapParam(method, joinPoint);
+        handlerLogWithMapParam(method, joinPoint);
     }
 
     private LogInfo buildLogInfo(JoinPoint joinPoint) {
-        System.out.println("--------------------recordLogInfo开始------------------------------");
-        System.out.println("King:\t\t\t\t\t" + joinPoint.getKind());
-        System.out.println("Target:\t\t\t\t\t" + joinPoint.getTarget().toString());
+        //System.out.println("--------------------recordLogInfo开始------------------------------");
+        //System.out.println("King:\t\t\t\t\t" + joinPoint.getKind());
+        //System.out.println("Target:\t\t\t\t\t" + joinPoint.getTarget().toString());
         Object[] os = joinPoint.getArgs();
-        System.out.print("Args:");
+        //System.out.print("Args:");
         for (int i = 0; i < os.length; i++) {
-            System.out.println("\t\t\t\t\t参数[" + i + "]:\t" + os[i].toString());
+            //System.out.println("\t\t\t\t\t参数[" + i + "]:\t" + os[i].toString());
         }
-        System.out.println("Signature:\t\t\t\t" + joinPoint.getSignature());
-        System.out.println("SourceLocation:\t\t\t" + joinPoint.getSourceLocation());
-        System.out.println("StaticPart:\t\t\t\t" + joinPoint.getStaticPart());
+        //System.out.println("Signature:\t\t\t\t" + joinPoint.getSignature());
+        //System.out.println("SourceLocation:\t\t\t" + joinPoint.getSourceLocation());
+        //System.out.println("StaticPart:\t\t\t\t" + joinPoint.getStaticPart());
 
         MethodSignature ms = (MethodSignature) joinPoint.getSignature();
         Method method = ms.getMethod();
         List<String> argList = new ArrayList<String>();
         for (int i = 0; i < os.length; i++) {
-            System.out.println("\t\t\t\t\t\t参数[" + i + "]:\t" + os[i].toString());
+            //System.out.println("\t\t\t\t\t\t参数[" + i + "]:\t" + os[i].toString());
             argList.add(os[i].toString());
         }
 
@@ -141,49 +138,8 @@ public class LogAopWithPointcut {
         userMessage.set(method.getAnnotation(Log.class).message());
 
         LogInfo logInfo = new LogInfo(startTimestamp.get(), endTimestamp.get(), startDateTime.get(), endDateTime.get(), runTime.get(), className.get(), methodName.get(), args.get(), userMessage.get());
-        System.out.println("--------------------recordLogInfo结束------------------------------");
+        //System.out.println("--------------------recordLogInfo结束------------------------------");
         return logInfo;
-    }
-
-    /**
-     * 第二种方式:将所有参数原封不动的传给LogHandler
-     * @param method
-     * @param joinPoint
-     */
-    private void handlerLogWithMultipleParam(Method method, JoinPoint joinPoint) {
-        System.out.println("--------------------handlerLogWithMultipleParam开始------------------------------");
-        if (!Strings.isNullOrEmpty(method.getAnnotation(Log.class).method())) {
-            String logHandlerMethodName = method.getAnnotation(Log.class).method();
-            Class<?> logHandlerClass = method.getAnnotation(Log.class).handler();
-            if (logHandlerClass == DefaultLogHandler.class) {
-                // 如果LogHandler是默认的DefaultLogHandler.class,就使用当前调用的Class
-                logHandlerClass = joinPoint.getTarget().getClass();
-            }
-            Method[] methods = logHandlerClass.getMethods();
-            boolean notFoundMethod = true;
-            for (int i = 0; i < methods.length; ++i) {
-                String currentMethodName = methods[i].getName();
-                if (Strings.isNullOrEmpty(logHandlerMethodName)) {
-                    continue;
-                }
-                if (!Strings.isNullOrEmpty(currentMethodName) && !Strings.isNullOrEmpty(logHandlerMethodName)) {
-                    if (currentMethodName.equals(logHandlerMethodName)) {
-                        try {
-                            methods[i].invoke(logHandlerClass.newInstance(), joinPoint.getArgs());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            throw new LogBindingException("Calling Class: '" + logHandlerClass + "', Method: '" + logHandlerMethodName + "' error.");
-                        }
-                        notFoundMethod = false;
-                        break;
-                    }
-                }
-            }
-            if (notFoundMethod) {
-                throw new LogBindingException("Method '" + logHandlerMethodName + "' not found in '" + logHandlerClass + "' Class .");
-            }
-        }
-        System.out.println("--------------------handlerLogWithMultipleParam结束------------------------------");
     }
 
     /**

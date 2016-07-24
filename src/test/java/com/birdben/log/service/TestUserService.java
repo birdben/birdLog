@@ -37,16 +37,6 @@ public class TestUserService {
     }
 
     @Test
-    public void testSaveHandlerLogInThisClassWithMultipleParam() throws Throwable {
-        UserInfo user = new UserInfo();
-        user.setName("birdben");
-        user.setAge(20);
-        user.setJob("programmer");
-        user.setWebsite("https://github.com/birdben");
-        userService.saveHandlerLogInThisClassWithMultipleParam(user);
-    }
-
-    @Test
     public void testSaveHandlerLogWithMapParam() throws Throwable {
         UserInfo user = new UserInfo();
         user.setName("birdben");
@@ -54,16 +44,6 @@ public class TestUserService {
         user.setJob("programmer");
         user.setWebsite("https://github.com/birdben");
         userService.saveHandlerLogWithMapParam(user);
-    }
-
-    @Test
-    public void testSaveHandlerLogWithMultipleParam() throws Throwable {
-        UserInfo user = new UserInfo();
-        user.setName("birdben");
-        user.setAge(20);
-        user.setJob("programmer");
-        user.setWebsite("https://github.com/birdben");
-        userService.saveHandlerLogWithMultipleParam(user);
     }
     /******************************************************** 测试正常情况结束 **********************************************************/
 

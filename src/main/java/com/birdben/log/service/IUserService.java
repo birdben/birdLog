@@ -12,11 +12,7 @@ import com.birdben.log.bean.UserInfo;
  */
 public interface IUserService {
 
-    void saveHandlerLogInThisClassWithMultipleParam(UserInfo user);
-
     void saveHandlerLogInThisClassWithMapParam(UserInfo user);
-
-    void saveHandlerLogWithMultipleParam(UserInfo user);
 
     void saveHandlerLogWithMapParam(UserInfo user);
 

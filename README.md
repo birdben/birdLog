@@ -9,11 +9,12 @@ Nginx -> Logstash -> Redis -> ElasticSearch -> Kibana
 #### 支持如下三种方式Log传参处理
 #### 测试URL
 ##### 方式一:默认Log注解默认使用当前Class的日志处理方法(已经废弃)
-##### 方式二:多参数方式处理日志
+##### 方式二:多参数方式处理日志(已经废弃)
 - http://127.0.0.1:8080/birdLog/aop/aopHandlerLogInThisClassWithMultipleParam?name=birdben&age=20&job=programmer&website=github.com/birdben
 - http://127.0.0.1:8080/birdLog/aop/aopHandlerLogWithMultipleParam?name=birdben&age=20&job=programmer&website=github.com/birdben
 
 ##### 方式三:Map参数方式处理日志
+因为参考了MyBatis的Provider设计,觉得将LogHandler处理日志的接口参数设计成Map的形式要比多参数的形式更加灵活,可以设计一个通用的接口方式来定义LogHandler,每个需要自定义LogHandler处理器只需要使用@LogParam注解定义好Map参数的key,在LogHander处理器实现类中接收Map参数就可以了,所以将方式一和方式二废弃掉
 - http://127.0.0.1:8080/birdLog/aop/aopHandlerLogInThisClassWithMapParam?name=birdben&age=20&job=programmer&website=github.com/birdben
 - http://127.0.0.1:8080/birdLog/aop/aopHandlerLogWithMapParam?name=birdben&age=20&job=programmer&website=github.com/birdben
 

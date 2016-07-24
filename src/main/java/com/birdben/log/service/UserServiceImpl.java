@@ -19,28 +19,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements IUserService {
 
     /******************************************************** 测试正常情况开始 **********************************************************/
-    @Log(message = "UserServiceImpl自己当做LogHandler来处理多参数", method = "handlerUserServiceLogInThisClassWithMultipleParam")
-    public void saveHandlerLogInThisClassWithMultipleParam(@LogParam("user") UserInfo user) {
-        System.out.println("UserServiceImpl自己当做LogHandler来处理多参数 name:" + user.getName());
-        System.out.println("UserServiceImpl自己当做LogHandler来处理多参数 age:" + user.getAge());
-        System.out.println("UserServiceImpl自己当做LogHandler来处理多参数 job:" + user.getJob());
-        System.out.println("UserServiceImpl自己当做LogHandler来处理多参数 website:" + user.getWebsite());
-    }
-
     @Log(message = "UserServiceImpl自己当做LogHandler来处理Map参数", method = "handlerUserServiceLogInThisClassWithMapParam")
     public void saveHandlerLogInThisClassWithMapParam(@LogParam("user") UserInfo user) {
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 name:" + user.getName());
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 age:" + user.getAge());
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 job:" + user.getJob());
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 website:" + user.getWebsite());
-    }
-
-    @Log(message = "使用UserServiceLogHandler当做LogHandler来处理多参数", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogWithMultipleParam")
-    public void saveHandlerLogWithMultipleParam(@LogParam("user") UserInfo user) {
-        System.out.println("使用UserServiceLogHandler当做LogHandler来处理多参数 name:" + user.getName());
-        System.out.println("使用UserServiceLogHandler当做LogHandler来处理多参数 age:" + user.getAge());
-        System.out.println("使用UserServiceLogHandler当做LogHandler来处理多参数 job:" + user.getJob());
-        System.out.println("使用UserServiceLogHandler当做LogHandler来处理多参数 website:" + user.getWebsite());
     }
 
     @Log(message = "使用UserServiceLogHandler当做LogHandler来处理Map参数", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogWithMapParam")
@@ -87,17 +71,11 @@ public class UserServiceImpl implements IUserService {
     /******************************************************** 测试异常情况结束 **********************************************************/
 
     /******************************************************** UserServiceImpl自己当成LogHandler的处理方法开始 **********************************************************/
-    public void handlerUserServiceLogInThisClassWithMultipleParam(UserInfo user) {
-        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam name:" + user.getName());
-        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam age:" + user.getAge());
-        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam job:" + user.getJob());
-        System.out.println("handlerUserServiceLogInThisClassWithMultipleParam website:" + user.getWebsite());
-    }
-
     public void handlerUserServiceLogInThisClassWithMapParam(Object parameterObject) {
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
+            // 这里的Map的key是根据@LogParam的注解对应的
             UserInfo user = (UserInfo) paramMap.get("user");
 
             System.out.println("handlerUserServiceLogInThisClassWithMapParam name:" + user.getName());

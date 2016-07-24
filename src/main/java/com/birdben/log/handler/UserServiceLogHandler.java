@@ -14,17 +14,6 @@ import com.birdben.log.springaop.LogAopWithPointcut;
 public class UserServiceLogHandler {
 
     /**
-     * 这里的日志处理方法 handlerUserServiceLogWithMultipleParam 的参数和Log注解的method调用方法是一模一样的
-     * @param user
-     */
-    public void handlerUserServiceLogWithMultipleParam(UserInfo user) {
-        System.out.println("handlerUserServiceLogWithMultipleParam name:" + user.getName());
-        System.out.println("handlerUserServiceLogWithMultipleParam age:" + user.getAge());
-        System.out.println("handlerUserServiceLogWithMultipleParam job:" + user.getJob());
-        System.out.println("handlerUserServiceLogWithMultipleParam website:" + user.getWebsite());
-    }
-
-    /**
      * 这里的日志处理方法 handlerUserServiceLogWithMapParam 的参数将Log注解的method调用方法的参数封装成一个Map
      * @param parameterObject
      */
@@ -32,6 +21,7 @@ public class UserServiceLogHandler {
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
+            // 这里的Map的key是根据@LogParam的注解对应的
             UserInfo user = (UserInfo) paramMap.get("user");
             System.out.println("handlerUserServiceLogWithMapParam name:" + user.getName());
             System.out.println("handlerUserServiceLogWithMapParam age:" + user.getAge());

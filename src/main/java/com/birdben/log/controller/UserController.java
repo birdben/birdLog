@@ -29,30 +29,6 @@ public class UserController {
 
     /**
      * 使用Log注解指定method:日志处理方法名,method是当前类的方法名
-     * 这里的日志处理方法 handlerUserControllerLogInThisClassWithMultipleParam 的参数和 aopHandlerLogInThisClassWithMultipleParam 方法的参数是一模一样的
-     * @param name
-     * @param age
-     * @param job
-     * @param website
-     * @return
-     * @throws InterruptedException
-     */
-    @Log(message = "访问aopHandlerLogInThisClassWithMultipleParam方法", method = "handlerUserControllerLogInThisClassWithMultipleParam")
-    @ResponseBody
-    @RequestMapping(value = "/aopHandlerLogInThisClassWithMultipleParam")
-    public String aopHandlerLogInThisClassWithMultipleParam(@LogParam("name") String name, @LogParam("age") int age, @LogParam("job") String job, @LogParam("website") String website) throws InterruptedException {
-        Thread.sleep(1000L);
-        UserInfo user = new UserInfo();
-        user.setName(name);
-        user.setAge(age);
-        user.setJob(job);
-        user.setWebsite(website);
-        userService.saveHandlerLogInThisClassWithMultipleParam(user);
-        return "";
-    }
-
-    /**
-     * 使用Log注解指定method:日志处理方法名,method是当前类的方法名
      * 这里的日志处理方法 handlerUserControllerLogInThisClassWithMapParam 的参数和 aopHandlerLogInThisClassWithMapParam 方法的参数是一模一样的
      * @param name
      * @param age
@@ -66,36 +42,13 @@ public class UserController {
     @RequestMapping(value = "/aopHandlerLogInThisClassWithMapParam")
     public String aopHandlerLogInThisClassWithMapParam(@LogParam("name") String name, @LogParam("age") int age, @LogParam("job") String job, @LogParam("website") String website) throws InterruptedException {
         Thread.sleep(1000L);
+        System.out.println("访问aopHandlerLogInThisClassWithMapParam方法");
         UserInfo user = new UserInfo();
         user.setName(name);
         user.setAge(age);
         user.setJob(job);
         user.setWebsite(website);
         userService.saveHandlerLogInThisClassWithMapParam(user);
-        return "";
-    }
-
-    /**
-     * 使用Log注解指定handler:日志处理类,method:日志处理方法名
-     * 这里的日志处理方法 handlerUserControllerLogWithMultipleParam 的参数和 aopHandlerLogWithMultipleParam 方法的参数是一模一样的
-     * @param name
-     * @param age
-     * @param job
-     * @param website
-     * @return
-     * @throws InterruptedException
-     */
-    @Log(message = "访问aopHandlerLogWithMultipleParam方法", handler = UserControllerLogHandler.class, method = "handlerUserControllerLogWithMultipleParam")
-    @ResponseBody
-    @RequestMapping(value = "/aopHandlerLogWithMultipleParam")
-    public String aopHandlerLogWithMultipleParam(@LogParam("name") String name, @LogParam("age") int age, @LogParam("job") String job, @LogParam("website") String website) throws InterruptedException {
-        Thread.sleep(1000L);
-        UserInfo user = new UserInfo();
-        user.setName(name);
-        user.setAge(age);
-        user.setJob(job);
-        user.setWebsite(website);
-        userService.saveHandlerLogWithMultipleParam(user);
         return "";
     }
 
@@ -114,6 +67,7 @@ public class UserController {
     @RequestMapping(value = "/aopHandlerLogWithMapParam")
     public String aopHandlerLogWithMapParam(@LogParam("name") String name, @LogParam("age") int age, @LogParam("job") String job, @LogParam("website") String website) throws InterruptedException {
         Thread.sleep(1000L);
+        System.out.println("访问aopHandlerLogWithMapParam方法");
         UserInfo user = new UserInfo();
         user.setName(name);
         user.setAge(age);
@@ -126,26 +80,13 @@ public class UserController {
     /******************************************************** UserController自己当成LogHandler的处理方法开始 **********************************************************/
     /**
      * 自定义日志处理方法,会通过Log注解的method指定该方法的名称
-     * @param name
-     * @param age
-     * @param job
-     * @param website
-     */
-    public void handlerUserControllerLogInThisClassWithMultipleParam(String name, int age, String job, String website) {
-        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam name:" + name);
-        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam age:" + age);
-        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam job:" + job);
-        System.out.println("handlerUserControllerLogInThisClassWithMultipleParam website:" + website);
-    }
-
-    /**
-     * 自定义日志处理方法,会通过Log注解的method指定该方法的名称
      * @param parameterObject
      */
     public void handlerUserControllerLogInThisClassWithMapParam(Object parameterObject) {
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
+            // 这里的Map的key是根据@LogParam的注解对应的
             String name = (String) paramMap.get("name");
             Integer age = (Integer) paramMap.get("age");
             String job = (String) paramMap.get("job");
