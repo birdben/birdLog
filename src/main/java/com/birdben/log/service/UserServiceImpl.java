@@ -7,6 +7,8 @@ import com.birdben.log.handler.UserServiceLogHandler;
 import com.birdben.log.springaop.LogAopWithPointcut;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * @author birdben
  * @version V1.0
@@ -50,12 +52,28 @@ public class UserServiceImpl implements IUserService {
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 website:" + user.getWebsite());
     }
 
+    @Log(message = "UserServiceImpl自己当做LogHandler来处理Object参数", method = "handlerUserServiceLogInThisClassWithObjectParam")
+    public void saveHandlerLogInThisClassWithObjectParam(@LogParam("user") UserInfo user) {
+        System.out.println("UserServiceImpl自己当做LogHandler来处理Object参数 name:" + user.getName());
+        System.out.println("UserServiceImpl自己当做LogHandler来处理Object参数 age:" + user.getAge());
+        System.out.println("UserServiceImpl自己当做LogHandler来处理Object参数 job:" + user.getJob());
+        System.out.println("UserServiceImpl自己当做LogHandler来处理Object参数 website:" + user.getWebsite());
+    }
+
     @Log(message = "使用UserServiceLogHandler当做LogHandler来处理Map参数", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogWithMapParam")
     public void saveHandlerLogWithMapParam(@LogParam("user") UserInfo user) {
         System.out.println("使用UserServiceLogHandler当做LogHandler来处理Map参数 name:" + user.getName());
         System.out.println("使用UserServiceLogHandler当做LogHandler来处理Map参数 age:" + user.getAge());
         System.out.println("使用UserServiceLogHandler当做LogHandler来处理Map参数 job:" + user.getJob());
         System.out.println("使用UserServiceLogHandler当做LogHandler来处理Map参数 website:" + user.getWebsite());
+    }
+
+    @Log(message = "使用UserServiceLogHandler当做LogHandler来处理Object参数", handler = UserServiceLogHandler.class, method = "handlerUserServiceLogWithObjectParam")
+    public void saveHandlerLogWithObjectParam(@LogParam("user") UserInfo user) {
+        System.out.println("使用UserServiceLogHandler当做LogHandler来处理Object参数 name:" + user.getName());
+        System.out.println("使用UserServiceLogHandler当做LogHandler来处理Object参数 age:" + user.getAge());
+        System.out.println("使用UserServiceLogHandler当做LogHandler来处理Object参数 job:" + user.getJob());
+        System.out.println("使用UserServiceLogHandler当做LogHandler来处理Object参数 website:" + user.getWebsite());
     }
     /******************************************************** 测试正常情况结束 **********************************************************/
 
@@ -94,7 +112,17 @@ public class UserServiceImpl implements IUserService {
     /******************************************************** 测试异常情况结束 **********************************************************/
 
     /******************************************************** UserServiceImpl自己当成LogHandler的处理方法开始 **********************************************************/
-    public void handlerUserServiceLogInThisClassWithMapParam(Object parameterObject) {
+    public void handlerUserServiceLogInThisClassWithMapParam(Map map) {
+        // 这里的Map的key是根据@LogParam的注解对应的
+        UserInfo user = (UserInfo) map.get("user");
+
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam name:" + user.getName());
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam age:" + user.getAge());
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam job:" + user.getJob());
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam website:" + user.getWebsite());
+    }
+
+    public void handlerUserServiceLogInThisClassWithObjectParam(Object parameterObject) {
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
@@ -133,7 +161,7 @@ public class UserServiceImpl implements IUserService {
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParam website:" + user.getWebsite());
     }
 
-    public void handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam(String name, int age, String job, String website) {
+    public void handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam(String name, Integer age, String job, String website) {
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam name:" + name);
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam age:" + age);
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam job:" + job);

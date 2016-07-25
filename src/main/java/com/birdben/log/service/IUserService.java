@@ -14,7 +14,11 @@ public interface IUserService {
 
     void saveHandlerLogInThisClassWithMapParam(UserInfo user);
 
+    void saveHandlerLogInThisClassWithObjectParam(UserInfo user);
+
     void saveHandlerLogWithMapParam(UserInfo user);
+
+    void saveHandlerLogWithObjectParam(UserInfo user);
 
     void saveHandlerLogInThisClassMethodNotFound(UserInfo user);
 
@@ -29,5 +33,4 @@ public interface IUserService {
     void saveWithoutLogParam(UserInfo user);
 
     void saveMultipleParamWithoutLogParam(String name, int age, String job, String website);
-
 }

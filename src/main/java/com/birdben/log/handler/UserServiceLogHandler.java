@@ -3,6 +3,8 @@ package com.birdben.log.handler;
 import com.birdben.log.bean.UserInfo;
 import com.birdben.log.springaop.LogAopWithPointcut;
 
+import java.util.Map;
+
 /**
  * @author birdben
  * @version V1.0
@@ -14,10 +16,10 @@ import com.birdben.log.springaop.LogAopWithPointcut;
 public class UserServiceLogHandler {
 
     /**
-     * 这里的日志处理方法 handlerUserServiceLogWithMapParam 的参数将Log注解的method调用方法的参数封装成一个Map
+     * 这里的日志处理方法 handlerUserServiceLogWithObjectParam 的参数将Log注解的method调用方法的参数封装成一个Map,但是抽象成一个Object参数
      * @param parameterObject
      */
-    public void handlerUserServiceLogWithMapParam(Object parameterObject) {
+    public void handlerUserServiceLogWithObjectParam(Object parameterObject) {
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         if (parameterType == LogAopWithPointcut.ParamMap.class) {
             LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
@@ -28,6 +30,19 @@ public class UserServiceLogHandler {
             System.out.println("handlerUserServiceLogWithMapParam job:" + user.getJob());
             System.out.println("handlerUserServiceLogWithMapParam website:" + user.getWebsite());
         }
+    }
+
+    /**
+     * 这里的日志处理方法 handlerUserServiceLogWithMapParam 的参数将Log注解的method调用方法的参数封装成一个Map
+     * @param map
+     */
+    public void handlerUserServiceLogWithMapParam(Map map) {
+        // 这里的Map的key是根据@LogParam的注解对应的
+        UserInfo user = (UserInfo) map.get("user");
+        System.out.println("handlerUserServiceLogWithMapParam name:" + user.getName());
+        System.out.println("handlerUserServiceLogWithMapParam age:" + user.getAge());
+        System.out.println("handlerUserServiceLogWithMapParam job:" + user.getJob());
+        System.out.println("handlerUserServiceLogWithMapParam website:" + user.getWebsite());
     }
 
     /**
