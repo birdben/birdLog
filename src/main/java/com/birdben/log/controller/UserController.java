@@ -5,12 +5,12 @@ import com.birdben.log.annotation.LogParam;
 import com.birdben.log.bean.UserInfo;
 import com.birdben.log.handler.UserControllerLogHandler;
 import com.birdben.log.service.IUserService;
-import com.birdben.log.springaop.LogAopWithPointcut;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author birdben
@@ -80,22 +80,18 @@ public class UserController {
     /******************************************************** UserController自己当成LogHandler的处理方法开始 **********************************************************/
     /**
      * 自定义日志处理方法,会通过Log注解的method指定该方法的名称
-     * @param parameterObject
+     * @param map
      */
-    public void handlerUserControllerLogInThisClassWithMapParam(Object parameterObject) {
-        Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
-        if (parameterType == LogAopWithPointcut.ParamMap.class) {
-            LogAopWithPointcut.ParamMap paramMap = (LogAopWithPointcut.ParamMap) parameterObject;
-            // 这里的Map的key是根据@LogParam的注解对应的
-            String name = (String) paramMap.get("name");
-            Integer age = (Integer) paramMap.get("age");
-            String job = (String) paramMap.get("job");
-            String website = (String) paramMap.get("website");
-            System.out.println("handlerUserControllerLogInThisClassWithMapParam name:" + name);
-            System.out.println("handlerUserControllerLogInThisClassWithMapParam age:" + age);
-            System.out.println("handlerUserControllerLogInThisClassWithMapParam job:" + job);
-            System.out.println("handlerUserControllerLogInThisClassWithMapParam website:" + website);
-        }
+    public void handlerUserControllerLogInThisClassWithMapParam(Map map) {
+        // 这里的Map的key是根据@LogParam的注解对应的
+        String name = (String) map.get("name");
+        Integer age = (Integer) map.get("age");
+        String job = (String) map.get("job");
+        String website = (String) map.get("website");
+        System.out.println("handlerUserControllerLogInThisClassWithMapParam name:" + name);
+        System.out.println("handlerUserControllerLogInThisClassWithMapParam age:" + age);
+        System.out.println("handlerUserControllerLogInThisClassWithMapParam job:" + job);
+        System.out.println("handlerUserControllerLogInThisClassWithMapParam website:" + website);
     }
     /******************************************************** UserController自己当成LogHandler的处理方法开始 **********************************************************/
 
