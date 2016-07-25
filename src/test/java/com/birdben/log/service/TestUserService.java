@@ -57,6 +57,16 @@ public class TestUserService {
     }
 
     @Test
+    public void testSaveMultipleParamWithLogParam() throws Throwable {
+        UserInfo user = new UserInfo();
+        user.setName("birdben");
+        user.setAge(20);
+        user.setJob("programmer");
+        user.setWebsite("https://github.com/birdben");
+        userService.saveMultipleParamWithLogParam(user.getName(), user.getAge(), user.getJob(), user.getWebsite());
+    }
+
+    @Test
     public void testSaveHandlerLogInThisClassWithMapParam() throws Throwable {
         UserInfo user = new UserInfo();
         user.setName("birdben");

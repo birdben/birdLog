@@ -33,4 +33,6 @@ public interface IUserService {
     void saveWithoutLogParam(UserInfo user);
 
     void saveMultipleParamWithoutLogParam(String name, int age, String job, String website);
+
+    void saveMultipleParamWithLogParam(String name, int age, String job, String website);
 }

@@ -44,6 +44,14 @@ public class UserServiceImpl implements IUserService {
         System.out.println("saveMultipleParamWithoutLogParam website:" + website);
     }
 
+    @Log(message = "UserServiceImpl自己当做LogHandler来处理带LogParam注解,并且有多个参数的情况", method = "handlerUserServiceLogInThisClassWithLogParamAndMultipleParam")
+    public void saveMultipleParamWithLogParam(@LogParam("paramName") String name, @LogParam("paramAge") int age, @LogParam("paramJob") String job, @LogParam("paramWebsite") String website) {
+        System.out.println("saveMultipleParamWithoutLogParam name:" + name);
+        System.out.println("saveMultipleParamWithoutLogParam age:" + age);
+        System.out.println("saveMultipleParamWithoutLogParam job:" + job);
+        System.out.println("saveMultipleParamWithoutLogParam website:" + website);
+    }
+
     @Log(message = "UserServiceImpl自己当做LogHandler来处理Map参数", method = "handlerUserServiceLogInThisClassWithMapParam")
     public void saveHandlerLogInThisClassWithMapParam(@LogParam("user") UserInfo user) {
         System.out.println("UserServiceImpl自己当做LogHandler来处理Map参数 name:" + user.getName());
@@ -166,6 +174,19 @@ public class UserServiceImpl implements IUserService {
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam age:" + age);
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam job:" + job);
         System.out.println("handlerUserServiceLogInThisClassWithoutLogParamAndMultipleParam website:" + website);
+    }
+
+    public void handlerUserServiceLogInThisClassWithLogParamAndMultipleParam(Map map) {
+        // 这里的Map的key是根据@LogParam的注解对应的
+        String name = (String) map.get("paramName");
+        Integer age = (Integer) map.get("paramAge");
+        String job = (String) map.get("paramJob");
+        String website = (String) map.get("paramWebsite");
+
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam name:" + name);
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam age:" + age);
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam job:" + job);
+        System.out.println("handlerUserServiceLogInThisClassWithMapParam website:" + website);
     }
 
     // 多参数不使用LogParam注解,是无法传递多参数的,因为使用invoke反射的方式参数类型是Object[],参数类型和方法无法对应上,所以只能使用Object... objs方式接收多参数
