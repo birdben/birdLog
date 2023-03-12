@@ -24,17 +24,13 @@ public class LogInfo {
      */
     public long endTimestamp;
     /**
-     * 开始时间
-     */
-    public Date startDateTime;
-    /**
-     * 结束时间
-     */
-    public Date endDateTime;
-    /**
      * 执行时间
      */
-    public float runTime;
+    public long cost;
+    /**
+     * TODO:运行状态
+     */
+    public Enum status;
     /**
      * 类名
      */
@@ -50,29 +46,27 @@ public class LogInfo {
     /**
      * 自定义日志消息
      */
-    public String userMessage;
+    public String message;
 
     public LogInfo() {
     }
 
-    public LogInfo(long startTimestamp, long endTimestamp, Date startDateTime, Date endDateTime, float runTime, String className, String methodName, List<String> args, String userMessage) {
+    public LogInfo(long startTimestamp, long endTimestamp, long cost, String className, String methodName, List<String> args, String message) {
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.runTime = runTime;
+        this.cost = cost;
         this.className = className;
         this.methodName = methodName;
         this.args = args;
-        this.userMessage = userMessage;
+        this.message = message;
     }
 
-    public String getUserMessage() {
-        return userMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setUserMessage(String userMessage) {
-        this.userMessage = userMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public long getStartTimestamp() {
@@ -91,28 +85,12 @@ public class LogInfo {
         this.endTimestamp = endTimestamp;
     }
 
-    public Date getStartDateTime() {
-        return startDateTime;
+    public float getCost() {
+        return cost;
     }
 
-    public void setStartDateTime(Date startDateTime) {
-        this.startDateTime = startDateTime;
-    }
-
-    public Date getEndDateTime() {
-        return endDateTime;
-    }
-
-    public void setEndDateTime(Date endDateTime) {
-        this.endDateTime = endDateTime;
-    }
-
-    public float getRunTime() {
-        return runTime;
-    }
-
-    public void setRunTime(float runTime) {
-        this.runTime = runTime;
+    public void setCost(long cost) {
+        this.cost = cost;
     }
 
     public String getClassName() {
@@ -144,15 +122,13 @@ public class LogInfo {
         StringBuffer sb = new StringBuffer();
         sb.append("开始时间戳:" + startTimestamp + "\n");
         sb.append("结束时间戳:" + endTimestamp + "\n");
-        sb.append("开始时间:" + startDateTime + "\n");
-        sb.append("结束时间:" + endDateTime + "\n");
-        sb.append("开始时间:" + DateUtils.format(startDateTime, "YYYY-MM-dd HH:mm:ss") + "\n");
-        sb.append("结束时间:" + DateUtils.format(endDateTime, "YYYY-MM-dd HH:mm:ss") + "\n");
+        //sb.append("开始时间:" + DateUtils.format(startDateTime, "YYYY-MM-dd HH:mm:ss") + "\n");
+        //sb.append("结束时间:" + DateUtils.format(endDateTime, "YYYY-MM-dd HH:mm:ss") + "\n");
         sb.append("类名:" + className + "\n");
         sb.append("方法名:" + methodName + "\n");
         sb.append("参数:" + args + "\n");
-        sb.append("自定义日志消息:" + userMessage + "\n");
-        sb.append("执行时间:" + runTime + " 秒\n");
+        //sb.append("自定义日志消息:" + userMessage + "\n");
+        sb.append("执行时间:" + cost + " 秒\n");
         return sb.toString();
     }
 }

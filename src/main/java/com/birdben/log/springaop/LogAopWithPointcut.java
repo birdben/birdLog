@@ -35,7 +35,7 @@ public class LogAopWithPointcut {
     ThreadLocal<Date> startDateTime = new ThreadLocal<Date>();
     ThreadLocal<Date> endDateTime = new ThreadLocal<Date>();
     ThreadLocal<Long> time = new ThreadLocal<Long>();
-    ThreadLocal<Float> runTime = new ThreadLocal<Float>();
+    ThreadLocal<Long> runTime = new ThreadLocal<Long>();
     ThreadLocal<String> tag = new ThreadLocal<String>();
     ThreadLocal<String> className = new ThreadLocal<String>();
     ThreadLocal<String> methodName = new ThreadLocal<String>();
@@ -86,7 +86,8 @@ public class LogAopWithPointcut {
         endTimestamp.set(currentEndTime);
         endDateTime.set(new Date(currentEndTime));
 
-        float currentRunTime = (endTimestamp.get().longValue() - startTimestamp.get().longValue()) / 1000F;
+        //float currentRunTime = (endTimestamp.get().longValue() - startTimestamp.get().longValue()) / 1000F;
+        Long currentRunTime = (endTimestamp.get().longValue() - startTimestamp.get().longValue());
 
         // 保存方法执行时间
         runTime.set(currentRunTime);
@@ -138,7 +139,7 @@ public class LogAopWithPointcut {
         // 保存方法的自定义日志消息
         userMessage.set(method.getAnnotation(Log.class).message());
 
-        LogInfo logInfo = new LogInfo(startTimestamp.get(), endTimestamp.get(), startDateTime.get(), endDateTime.get(), runTime.get(), className.get(), methodName.get(), args.get(), userMessage.get());
+        LogInfo logInfo = new LogInfo(startTimestamp.get(), endTimestamp.get(), runTime.get(), className.get(), methodName.get(), args.get(), userMessage.get());
         //System.out.println("--------------------recordLogInfo结束------------------------------");
         return logInfo;
     }
@@ -193,10 +194,11 @@ public class LogAopWithPointcut {
      * @param pjp
      */
     @Around("log()")
-    public void aroundExec(ProceedingJoinPoint pjp) throws Throwable {
+    public Object aroundExec(ProceedingJoinPoint pjp) throws Throwable {
         //System.out.println("Around Before");
-        pjp.proceed();
+        Object retVal = pjp.proceed();
         //System.out.println("Around After");
+        return retVal;
     }
 
     /**
